@@ -6,6 +6,7 @@ import { View, Text, Image, ScrollView, ActivityIndicator, FlatList } from 'reac
 import { useRouter } from 'expo-router';
 import useFetch from '@/services/useFetch';
 import { fetchMovies } from '@/services/api';
+import MovieCard from '@/components/MovieCard';
 
 export default function Home() {
   const router = useRouter();
@@ -14,9 +15,7 @@ export default function Home() {
     loading: moviesLoading,
     error: moviesError
   } = useFetch(() => fetchMovies({ query: '' }));
-  console.log("Movies data:", movies);
-console.log("Loading state:", moviesLoading);
-console.log("Error:", moviesError);
+
 
   return (
     <View className='flex-1 bg-primary'>
@@ -66,25 +65,12 @@ console.log("Error:", moviesError);
                 <FlatList
                   data={movies}
                   renderItem={({ item }) => (
-                    <View className='flex-1 p-2 mb-4'>
-                      <Image 
-                        source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
-                        className='w-full aspect-[2/3] rounded-lg'
-                        resizeMode='cover'
-                      />
-                      <Text 
-                        className='text-white text-sm mt-2 font-medium'
-                        numberOfLines={1}
-                      >
-                        {item.title}
-                      </Text>
-                      <Text className='text-gray-400 text-xs mt-1'>
-                        {item.release_date?.split('-')[0]}
-                      </Text>
-                    </View>
+                   <MovieCard
+                 {...item}
+                   />
                   )}
                   keyExtractor={(item) => item.id.toString()}
-                  numColumns={2}
+                  numColumns={3}
                   scrollEnabled={false} // Disable internal scrolling
                   columnWrapperStyle={{ 
                     justifyContent: 'flex-start',
