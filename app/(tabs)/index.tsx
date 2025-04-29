@@ -7,9 +7,17 @@ import { useRouter } from 'expo-router';
 import useFetch from '@/services/useFetch';
 import { fetchMovies } from '@/services/api';
 import MovieCard from '@/components/MovieCard';
+import { getTrendingMovies } from '@/services/appwrite';
+import TrendingCard from '@/components/TrendingCard';
 
 export default function Home() {
   const router = useRouter();
+  const {
+    data: trendingMovies,
+    loading: trendingLoading,
+    error: trendingError    
+   
+  } = useFetch(getTrendingMovies);
   const {
     data: movies,
     loading: moviesLoading,
@@ -39,15 +47,15 @@ export default function Home() {
 
         {/* Scrollable Content Area */}
         <View className='flex-1 px-5 pb-10'>
-          {moviesLoading ? (
+          {moviesLoading  || trendingLoading? (
             <ActivityIndicator
               size="large"
               color="#FFFFFF"
               className='mt-10 self-center'
             />
-          ) : moviesError ? (
+          ) : moviesError || trendingError ? (
             <Text className='text-white text-center'>
-              Error: {moviesError?.message}
+              Error: {moviesError?.message} || {trendingError?.message} ? message
             </Text>
           ) : (
             <>
@@ -55,6 +63,27 @@ export default function Home() {
                 onPress={() => router.push('/search')}
                 placeholder="Search for a movie"
               />
+             {trendingMovies && (
+              <View className="mt-10">
+                <Text className="text-lg text-white font-bold mb-3">
+                  Trending Movies
+                </Text>
+                <FlatList
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  className="mb-4 mt-3"
+                  data={trendingMovies}
+                  contentContainerStyle={{
+                    gap: 26,
+                  }}
+                  renderItem={({ item, index }) => (
+                    <TrendingCard movie={item} index={index} />
+                  )}
+                  keyExtractor={(item) => item.movie_id.toString()}
+                  ItemSeparatorComponent={() => <View className="w-4" />}
+                />
+              </View>
+            )}
               
               <Text className='text-lg text-white font-bold mt-5 mb-3'>
                 Latest Movies
