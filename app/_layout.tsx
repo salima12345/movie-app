@@ -8,6 +8,7 @@ export default function RootLayout() {
 
   return (
     <>
+    <StatusBar hidden={true}/>
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Screen name="index" options={{ title: 'Movies' }} />
       </Stack>
